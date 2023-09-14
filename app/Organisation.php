@@ -1,0 +1,55 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App;
+
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+/**
+ * Class Organisation
+ *
+ * @property int         id
+ * @property string      name
+ * @property int         owner_user_id
+ * @property Carbon      trial_end
+ * @property bool        subscribed
+ * @property Carbon      created_at
+ * @property Carbon      updated_at
+ * @property Carbon|null deleted_at
+ *
+ * @package App
+ */
+class Organisation extends Model
+{
+    use SoftDeletes;
+
+    /**
+     * @var array
+     */
+    protected $fillable = ['name', 'owner_user_id'];
+
+    /**
+     * @var array
+     */
+    protected $dates = [
+        'deleted_at',
+    ];
+
+    protected $casts = [
+        'trial_end' => 'timestamp',
+        'created_at' => 'timestamp',
+        'updated_at' => 'timestamp'
+    ];
+
+    /**
+     * @return BelongsTo
+     */
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'owner_user_id', 'id');
+    }
+}
